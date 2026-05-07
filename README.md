@@ -1,6 +1,6 @@
 # 🌤 Weather Dynamic Wallpaper App
 
-Aplicativo desktop para Windows 11 que altera automaticamente o papel de parede com base no clima real.
+Aplicativo desktop para Windows 10/11 que altera automaticamente o papel de parede com base no clima real.
 
 ---
 
@@ -420,5 +420,5 @@ Criar uma experiência desktop viva, elegante e conectada ao clima do mundo real
 ---
 
 <p align="center">
-	Desenvolvido para Windows 11 ☁️
+	Desenvolvido para Windows 10/11 ☁️
 </p>
