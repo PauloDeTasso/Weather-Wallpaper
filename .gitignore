@@ -216,3 +216,259 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+```gitignore
+# =========================================================
+# Weather Dynamic Wallpaper
+# .gitignore completo para Python + VS Code + Windows 11
+# =========================================================
+
+# =========================================================
+# PYTHON
+# =========================================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.pyd
+*.so
+*.dll
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Type checker
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints
+
+# =========================================================
+# VIRTUAL ENVIRONMENTS
+# =========================================================
+
+venv/
+env/
+ENV/
+.venv/
+
+# =========================================================
+# ENVIRONMENT VARIABLES / SECRETS
+# =========================================================
+
+.env
+.env.*
+*.env
+
+# Configurações locais privadas
+config.local.json
+secrets.json
+
+# =========================================================
+# WINDOWS
+# =========================================================
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Windows Installer
+*.msi
+*.msix
+*.appx
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# =========================================================
+# VS CODE
+# =========================================================
+
+.vscode/
+
+# Opcional:
+# caso queira compartilhar configs do VSCode,
+# comente a linha acima e use:
+#
+# .vscode/*
+# !.vscode/settings.json
+# !.vscode/extensions.json
+# !.vscode/launch.json
+
+# =========================================================
+# PYCHARM / JETBRAINS
+# =========================================================
+
+.idea/
+*.iml
+
+# =========================================================
+# BUILD / CACHE
+# =========================================================
+
+.cache/
+temp/
+tmp/
+
+# =========================================================
+# DATABASES
+# =========================================================
+
+*.db
+*.sqlite3
+*.sqlite
+
+# =========================================================
+# RUNTIME FILES
+# =========================================================
+
+runtime/
+logs/
+sessions/
+
+# =========================================================
+# GENERATED WALLPAPERS / EXPORTS
+# =========================================================
+
+generated/
+exports/
+screenshots/
+
+# =========================================================
+# USER CONFIGS
+# =========================================================
+
+user-config.json
+user-settings.json
+
+# =========================================================
+# API CACHE
+# =========================================================
+
+weather-cache.json
+cache/
+
+# =========================================================
+# ASSETS OPCIONAIS GRANDES
+# =========================================================
+
+# Caso queira ignorar wallpapers pesados:
+# assets/wallpapers/
+# *.psd
+# *.blend
+# *.kra
+
+# =========================================================
+# AUDIO / VIDEO OPCIONAIS
+# =========================================================
+
+*.mp4
+*.mov
+*.avi
+*.wav
+*.flac
+
+# =========================================================
+# OS GENERATED FILES
+# =========================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================================================
+# BACKUPS
+# =========================================================
+
+*.bak
+*.backup
+*.old
+*.orig
+
+# =========================================================
+# DEBUG
+# =========================================================
+
+debug.log
+trace.log
+
+# =========================================================
+# NODE (caso futuramente use Electron)
+# =========================================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================================================
+# COMPILADOS
+# =========================================================
+
+*.exe
+*.exe~
+*.bat
+
+# =========================================================
+# CUSTOM
+# =========================================================
+
+# Ignorar builds locais
+release/
+release-build/
+
+# Ignorar arquivos temporários do usuário
+personal/
+private/
+
+# =========================================================
+# FIM
+# =========================================================
+```
