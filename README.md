@@ -420,5 +420,5 @@ Criar uma experiência desktop viva, elegante e conectada ao clima do mundo real
 ---
 
 <p align="center">
-	Desenvolvido para Windows 11 ☁️
+	Desenvolvido para Windows 10/11 ☁️
 </p>
