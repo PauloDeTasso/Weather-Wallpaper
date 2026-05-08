@@ -1,0 +1,82 @@
+PASTA DE IMAGENS — Weather Wallpaper App
+========================================
+
+Coloque aqui as suas imagens. Não precisa renomear nada!
+Use os botões "📂 Escolher" na aba "Imagens por Condição"
+para mapear qualquer imagem do seu computador para cada slot.
+
+Se preferir nomear automaticamente, use os nomes abaixo:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☀️  CEU LIMPO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  clear_dawn.jpg          → Amanhecer
+  clear_morning.jpg       → Manhã
+  clear_afternoon.jpg     → Tarde
+  clear_dusk.jpg          → Anoitecer
+  clear_night.jpg         → Noite
+  clear_midnight.jpg      → Madrugada
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⛅  PARCIALMENTE NUBLADO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  partly_cloudy_dawn.jpg
+  partly_cloudy_morning.jpg
+  partly_cloudy_afternoon.jpg
+  partly_cloudy_dusk.jpg
+  partly_cloudy_night.jpg
+  partly_cloudy_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☁️  NUBLADO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  cloudy_dawn.jpg
+  cloudy_morning.jpg
+  cloudy_afternoon.jpg
+  cloudy_dusk.jpg
+  cloudy_night.jpg
+  cloudy_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌧️  CHUVA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  rain_dawn.jpg / rain_morning.jpg / rain_afternoon.jpg
+  rain_dusk.jpg / rain_night.jpg  / rain_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⛈️  TEMPESTADE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  storm_dawn.jpg  ...  storm_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌈  PÓS-CHUVA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  post_rain_dawn.jpg  ...  post_rain_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌫️  NEBLINA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  fog_dawn.jpg  ...  fog_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❄️  NEVE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  snow_dawn.jpg  ...  snow_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💨  VENTO FORTE  (>25 km/h em céu limpo)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  windy_dawn.jpg  ...  windy_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧊  FRIO  (≤10°C em céu limpo)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  cold_dawn.jpg  ...  cold_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥  CALOR EXTREMO  (≥35°C em céu limpo)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  hot_dawn.jpg  ...  hot_midnight.jpg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Formatos suportados: .jpg  .jpeg  .png  .bmp

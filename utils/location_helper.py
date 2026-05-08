@@ -1,5 +1,5 @@
 """
-Location Helper - Fetch approximate user location via IP geolocation
+Location Helper — geolocalização por IP (sem permissão de GPS necessária)
 """
 
 import requests
@@ -10,27 +10,24 @@ logger = logging.getLogger(__name__)
 
 def get_location_by_ip() -> tuple[float, float] | None:
     """
-    Returns (latitude, longitude) from IP geolocation.
-    Uses ip-api.com (free, no key required).
+    Retorna (latitude, longitude) via ip-api.com (gratuito, sem chave).
+    Retorna None se falhar.
     """
     try:
-        response = requests.get("http://ip-api.com/json/", timeout=5)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get("http://ip-api.com/json/", timeout=6)
+        resp.raise_for_status()
+        data = resp.json()
         if data.get("status") == "success":
-            lat = data.get("lat")
-            lon = data.get("lon")
+            lat  = float(data["lat"])
+            lon  = float(data["lon"])
             city = data.get("city", "")
-            logger.info(f"Location detected: {city} ({lat}, {lon})")
-            return float(lat), float(lon)
-        else:
-            logger.warning("IP geolocation returned non-success status.")
-            return None
+            logger.info(f"[Location] {city}  ({lat}, {lon})")
+            return lat, lon
+        logger.warning(f"[Location] ip-api status: {data.get('status')}")
     except Exception as e:
-        logger.error(f"Failed to get location by IP: {e}")
-        return None
+        logger.error(f"[Location] Falha: {e}")
+    return None
 
 
 def validate_coordinates(lat: float, lon: float) -> bool:
-    """Validate latitude and longitude ranges."""
-    return -90 <= lat <= 90 and -180 <= lon <= 180
+    return -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0
