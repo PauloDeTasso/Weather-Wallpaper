@@ -84,6 +84,7 @@ weather-wallpaper-app/
 │
 ├── 📄 main.py                     ← Ponto de entrada
 ├── 📄 config.json                 ← Configurações persistentes
+├── 📄 WeatherWallpaper.spec       ← Configuração de build (PyInstaller)
 │
 ├── 📁 core/
 │   ├── weather_api.py             ← Integração Open-Meteo (retry, cache)
@@ -123,9 +124,11 @@ O painel de clima apresenta todos os campos do JSON retornado pela Open-Meteo de
 
 ---
 
-## ⚙️ Instalação
+## ⚙️ Instalação e Build
 
 **Pré-requisitos:** Python 3.10+ no Windows 11
+
+### Rodar em modo desenvolvimento
 
 ```bash
 # Clone o repositório
@@ -139,7 +142,28 @@ pip install -r requirements.txt
 python main.py
 ```
 
+### Gerar o executável `.exe`
+
+```bash
+# Instale o PyInstaller
+pip install pyinstaller
+
+# Gere o .exe com um clique (sem console, tudo embutido)
+pyinstaller WeatherWallpaper.spec
+```
+
+O executável final fica em:
+
+```
+dist/
+└── WeatherWallpaper.exe   ← clique duplo, abre direto
+```
+
+> As configurações do usuário são salvas automaticamente em  
+> `%APPDATA%\WeatherWallpaper\config.json`
+
 **Dependências:**
+
 ```
 customtkinter >= 5.2.0
 Pillow        >= 10.0.0
@@ -151,7 +175,7 @@ pystray       >= 0.19.0
 
 ## 🖼️ Como Usar
 
-1. Execute `python main.py`
+1. Execute `WeatherWallpaper.exe` (ou `python main.py` em modo dev)
 2. Na aba **⚙️ Configurações**, insira sua latitude e longitude  
    *(ou clique em "📡 Detectar automaticamente")*
 3. Na aba **🖼️ Imagens por Condição**, clique em **📂 Escolher** em cada linha para mapear suas fotos
@@ -162,11 +186,12 @@ pystray       >= 0.19.0
 
 ## 🔬 Conceitos Técnicos Demonstrados
 
-- **Integração com API REST** — consumo, parsing e tratamento de erros com retry
+- **Integração com API REST** — consumo, parsing e tratamento de erros com retry automático
 - **Programação Concorrente** — threads independentes para scheduler, tray e UI (thread-safety via `after()`)
 - **Arquitetura em Camadas** — separação clara entre `core`, `ui` e `utils`
 - **Persistência de Estado** — configurações salvas em JSON com merge inteligente de defaults
 - **Interoperabilidade com SO** — chamada direta à Win32 API via `ctypes` sem dependências externas
+- **Empacotamento com PyInstaller** — `.spec` customizado, `resource_path()`, dados em `%APPDATA%`
 - **Design de Interface Moderno** — dark mode com CustomTkinter, badges coloridos, tabview, scrollable frames
 - **Resiliência** — retry automático, fallback em cascata entre condições, cache do último wallpaper válido
 
