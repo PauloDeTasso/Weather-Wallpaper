@@ -182,7 +182,7 @@ Estácio · Rio de Janeiro, RJ — Brasil
 
 *"Transformando dados climáticos em experiências visuais."*
 
-[![GitHub](https://img.shields.io/badge/GitHub-@seu--usuario-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/seu-usuario)
+[![GitHub](https://img.shields.io/badge/GitHub-@PauloDeTasso-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/seu-usuario)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Paulo%20de%20Tasso-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/seu-perfil)
 
 </div>
