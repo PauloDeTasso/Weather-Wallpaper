@@ -1,6 +1,7 @@
 """
 Wallpaper Controller — Windows 11
-Usa SystemParametersInfoW para trocar o papel de parede sem reiniciar o Explorer.
+SystemParametersInfoW — sem reiniciar Explorer.
+Resolve caminhos relativos a assets dentro do .exe via resource_path.
 """
 
 import ctypes
@@ -16,19 +17,41 @@ SPIF_SENDCHANGE      = 0x02
 _last_applied: str | None = None
 
 
+def _resolve(image_path: str) -> str:
+    """
+    Se o caminho não for absoluto, tenta localizá-lo:
+    1. Relativo ao CWD
+    2. Dentro do bundle do .exe (resource_path)
+    """
+    if os.path.isabs(image_path):
+        return image_path
+
+    # Relativo ao CWD (modo dev)
+    cwd_path = os.path.abspath(image_path)
+    if os.path.isfile(cwd_path):
+        return cwd_path
+
+    # Dentro do .exe (modo produção)
+    try:
+        import builtins
+        rp = getattr(builtins, "APP_RESOURCE_PATH", lambda x: x)
+        bundled = rp(image_path)
+        if os.path.isfile(bundled):
+            return bundled
+    except Exception:
+        pass
+
+    return image_path  # devolve original; set_wallpaper vai reportar erro
+
+
 def set_wallpaper(image_path: str) -> bool:
-    """
-    Define o papel de parede do Windows.
-    Ignora se o mesmo arquivo já está ativo (evita piscada desnecessária).
-    Retorna True em sucesso, False em falha.
-    """
     global _last_applied
 
     if not image_path:
-        logger.warning("[Wallpaper] Caminho vazio, ignorado.")
+        logger.warning("[Wallpaper] Caminho vazio.")
         return False
 
-    abs_path = os.path.abspath(image_path)
+    abs_path = _resolve(image_path)
 
     if not os.path.isfile(abs_path):
         logger.error(f"[Wallpaper] Arquivo não encontrado: {abs_path}")
@@ -52,16 +75,14 @@ def set_wallpaper(image_path: str) -> bool:
             _last_applied = abs_path
             logger.info(f"[Wallpaper] Aplicado: {abs_path}")
             return True
-        else:
-            logger.error("[Wallpaper] SystemParametersInfoW retornou 0.")
-            return False
+        logger.error("[Wallpaper] SystemParametersInfoW retornou 0.")
+        return False
     except Exception as e:
         logger.error(f"[Wallpaper] Exceção: {e}")
         return False
 
 
 def get_current_wallpaper() -> str | None:
-    """Retorna o caminho do wallpaper atualmente ativo no Windows."""
     try:
         buf = ctypes.create_unicode_buffer(512)
         ctypes.windll.user32.SystemParametersInfoW(0x0073, len(buf), buf, 0)
