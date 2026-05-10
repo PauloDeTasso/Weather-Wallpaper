@@ -203,7 +203,7 @@ pystray       >= 0.19.0
 
 ### Paulo de Tasso
 **Engenharia de Software — 7º Período**  
-Estácio · Rio de Janeiro, RJ — Brasil
+Estácio - EAD · Rio de Janeiro, RJ — Brasil
 
 *"Transformando dados climáticos em experiências visuais."*
 
@@ -224,6 +224,6 @@ Distribuído sob a licença **MIT**. Veja [`LICENSE`](LICENSE) para mais informa
 
 **⭐ Se este projeto foi útil, deixe uma estrela — ajuda muito!**
 
-*Feito com ☕ e Python no Rio de Janeiro*
+*Feito com ☕ e Python*
 
 </div>
