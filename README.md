@@ -51,9 +51,9 @@ A ideia nasce de uma percepção simples: a experiência visual do seu desktop p
 ```
 🌅 Amanhecer   05:00 – 07:00
 🌄 Manhã       07:00 – 12:00
-☀️  Tarde       12:00 – 18:00
-🌇 Anoitecer   18:00 – 20:00
-🌃 Noite       20:00 – 00:00
+☀️  Tarde       12:00 – 17:00
+🌇 Anoitecer   17:00 – 18:00
+🌃 Noite       18:00 – 00:00
 🌌 Madrugada   00:00 – 05:00
 ```
 
