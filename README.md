@@ -126,49 +126,95 @@ O painel de clima apresenta todos os campos do JSON retornado pela Open-Meteo de
 
 ## ⚙️ Instalação e Build
 
-**Pré-requisitos:** Python 3.10+ no Windows 11
+> **Pré-requisitos:** [Python 3.10+](https://www.python.org/downloads/) instalado no Windows 11  
+> Durante a instalação do Python, marque a opção **"Add Python to PATH"**
 
-### Rodar em modo desenvolvimento
+---
+
+### 1. Clone o repositório
 
 ```bash
-# Clone o repositório
 git clone https://github.com/seu-usuario/weather-wallpaper-app.git
 cd weather-wallpaper-app
+```
 
-# Instale as dependências
+---
+
+### 2. Instale as dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-# Execute
+---
+
+### 3. Rode em modo desenvolvimento *(opcional)*
+
+Para testar antes de gerar o `.exe`:
+
+```bash
 python main.py
 ```
 
-### Gerar o executável `.exe`
+---
+
+### 4. Gere o executável `.exe`
+
+**4.1 — Instale o PyInstaller:**
 
 ```bash
-# Instale o PyInstaller
 pip install pyinstaller
+```
 
-# Gere o .exe com um clique (sem console, tudo embutido)
+**4.2 — Gere o `.exe` usando o arquivo `.spec` incluído no projeto:**
+
+```bash
 pyinstaller WeatherWallpaper.spec
 ```
 
-O executável final fica em:
+> O `.spec` já está pré-configurado com todas as dependências, assets e flags corretas.  
+> Não é necessário nenhum parâmetro adicional.
+
+**4.3 — Aguarde o build terminar. A estrutura gerada será:**
 
 ```
 dist/
-└── WeatherWallpaper.exe   ← clique duplo, abre direto
+└── WeatherWallpaper/
+    ├── WeatherWallpaper.exe   ← executável principal
+    ├── _internal/             ← dependências internas (não apagar)
+    └── ...
 ```
 
-> As configurações do usuário são salvas automaticamente em  
-> `%APPDATA%\WeatherWallpaper\config.json`
+**4.4 — Execute:**
 
-**Dependências:**
+Clique duplo em `WeatherWallpaper.exe` — abre direto, sem janela de console.
+
+---
+
+### 5. Distribuição *(opcional)*
+
+Para compartilhar ou mover o app para outra pasta:
+
+- Copie a pasta **`dist/WeatherWallpaper/`** inteira para onde quiser
+- O app funciona em qualquer local — **não depende do Python instalado**
+- As configurações do usuário são salvas automaticamente em:
+
+```
+C:\Users\SeuNome\AppData\Roaming\WeatherWallpaper\
+├── config.json            ← configurações e mapeamento de imagens
+└── weather_wallpaper.log  ← log de execução
+```
+
+---
+
+### Dependências
 
 ```
 customtkinter >= 5.2.0
 Pillow        >= 10.0.0
 requests      >= 2.31.0
 pystray       >= 0.19.0
+pyinstaller   >= 6.0.0     ← apenas para build
 ```
 
 ---
@@ -176,7 +222,7 @@ pystray       >= 0.19.0
 ## 🖼️ Como Usar
 
 1. Execute `WeatherWallpaper.exe` (ou `python main.py` em modo dev)
-2. Na aba **⚙️ Configurações**, insira sua latitude e longitude  
+2. Na aba **⚙️ Configurações**, insira sua latitude e longitude
    *(ou clique em "📡 Detectar automaticamente")*
 3. Na aba **🖼️ Imagens por Condição**, clique em **📂 Escolher** em cada linha para mapear suas fotos
 4. Clique em **▶ Iniciar** — o sistema começa a monitorar e trocar o wallpaper automaticamente
@@ -191,7 +237,7 @@ pystray       >= 0.19.0
 - **Arquitetura em Camadas** — separação clara entre `core`, `ui` e `utils`
 - **Persistência de Estado** — configurações salvas em JSON com merge inteligente de defaults
 - **Interoperabilidade com SO** — chamada direta à Win32 API via `ctypes` sem dependências externas
-- **Empacotamento com PyInstaller** — `.spec` customizado, `resource_path()`, dados em `%APPDATA%`
+- **Empacotamento com PyInstaller** — `.spec` customizado, `resource_path()`, dados gravados em `%APPDATA%`
 - **Design de Interface Moderno** — dark mode com CustomTkinter, badges coloridos, tabview, scrollable frames
 - **Resiliência** — retry automático, fallback em cascata entre condições, cache do último wallpaper válido
 
