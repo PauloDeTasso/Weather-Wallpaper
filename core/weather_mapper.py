@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 PERIODS = [
     ("dawn",      "Amanhecer",  (5,  7)),
     ("morning",   "Manhã",      (7,  12)),
-    ("afternoon", "Tarde",      (12, 18)),
-    ("dusk",      "Anoitecer",  (18, 20)),
-    ("night",     "Noite",      (20, 24)),
+    ("afternoon", "Tarde",      (12, 17)),
+    ("dusk",      "Anoitecer",  (17, 18)),
+    ("night",     "Noite",      (18, 24)),
     ("midnight",  "Madrugada",  (0,  5)),
 ]
 
