@@ -71,6 +71,8 @@ def main():
     tray_thread.start()
 
     app = Dashboard(config, scheduler, tray)
+    if "--minimized" in sys.argv:
+        app.withdraw() 
     app.mainloop()
 
     logger.info("Aplicativo encerrado.")

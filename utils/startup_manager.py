@@ -34,7 +34,7 @@ def _get_startup_command() -> str:
     """
     if getattr(sys, "frozen", False):
         # Rodando como executável compilado — sys.executable É o .exe
-        cmd = f'"{sys.executable}"'
+        cmd = f'"{sys.executable}" --minimized'
         logger.info(f"[Startup] Modo .exe detectado: {cmd}")
     else:
         # Rodando como script Python normal (desenvolvimento)
