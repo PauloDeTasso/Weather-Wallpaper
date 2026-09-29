@@ -63,6 +63,12 @@ def main():
     from ui.dashboard import Dashboard
     from ui.tray import TrayApp
 
+    try:
+        from utils.image_store import ensure_skeleton
+        ensure_skeleton()  # garante images/<cond>/ ao lado do .exe p/ troca manual
+    except Exception as e:
+        logger.warning(f"ensure_skeleton falhou: {e}")
+
     config    = ConfigManager()
     scheduler = Scheduler(config)
     tray      = TrayApp(config, scheduler)

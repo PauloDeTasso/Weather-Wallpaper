@@ -22,6 +22,7 @@ class Scheduler:
         self.last_weather_data: dict | None = None  # formatted card data
         self.last_key: str | None = None
         self.last_image: str | None = None
+        self.last_source: str = ""  # 'auto' | 'manual' | 'fallback:...' | ''
         self.last_error: str | None = None
         self.status: str = "Parado"
         self._prev_condition: str | None = None  # para detectar pós-chuva
@@ -78,25 +79,34 @@ class Scheduler:
 
         self.last_key = key
 
-        wallpaper_map = self.config.get_wallpaper_map()
-        image_path = wallpaper_map.get(key, "")
+        import os as _os
+        from utils.image_store import resolve_image
 
-        # Fallback chain: try base condition variants
-        if not image_path or not __import__("os").path.isfile(image_path):
+        wallpaper_map = self.config.get_wallpaper_map()
+        image_path, source = resolve_image(key, wallpaper_map.get(key, ""))
+        used_key = key
+
+        # Fallback chain: tenta outros slots (auto ou manual) até achar arquivo real
+        if not image_path:
             fallback_keys = self._fallback_chain(key, wallpaper_map)
             for fb in fallback_keys:
-                fp = wallpaper_map.get(fb, "")
-                if fp and __import__("os").path.isfile(fp):
+                fp, fs = resolve_image(fb, wallpaper_map.get(fb, ""))
+                if fp and _os.path.isfile(fp):
                     image_path = fp
-                    logger.warning(f"Fallback: '{key}' → '{fb}'")
+                    source = f"fallback:{fb}"
+                    used_key = fb
+                    logger.warning(f"Fallback: '{key}' → '{fb}' ({fs})")
                     break
 
-        if image_path and __import__("os").path.isfile(image_path):
+        if image_path and _os.path.isfile(image_path):
             self.last_image = image_path
+            self.last_source = source
+            self.last_key = used_key if source.startswith("fallback:") else key
             self.config.set("last_wallpaper", image_path)
             self.config.set("last_weather", weather)
             set_wallpaper(image_path)
-            self.status = f"✅ Ativo"
+            tag = "AUTO" if source == "auto" else ("MANUAL" if source == "manual" else source.upper())
+            self.status = f"✅ Ativo [{tag}]"
         else:
             self.status = "⚠️ Nenhuma imagem mapeada para esta condição"
             logger.warning(f"No valid image for key: {key}")

@@ -1,0 +1,31 @@
+COMO USAR — PASTAS AUTOMÁTICAS (nome exato, sem clicar em nada)
+============================================================
+
+Estrutura oficial (pastas em inglês, UMA foto por slot):
+
+  images/clear/morning.jpg        → Céu limpo, Manhã
+  images/rain/dawn.png            → Chuva, Amanhecer
+  images/<condição>/<período>.<ext>
+
+Condições (11 pastas): clear, partly_cloudy, cloudy, rain, storm,
+  post_rain, fog, snow, windy, cold, hot
+Períodos (6 nomes): dawn (amanhecer), morning (manhã), afternoon (tarde),
+  dusk (anoitecer), night (noite), midnight (madrugada)
+Extensões: .jpg .jpeg .png .bmp (qualquer uma vale)
+
+PARA TROCAR UMA FOTO:
+  1. Copie a nova imagem para a pasta da condição
+  2. Renomeie para o nome do período (ex: morning.jpg)
+  3. Confirme a substituição — pronto.
+  Na próxima atualização (ou botão 🔄 Atualizar Agora / Re-escanear pastas)
+  o sistema usa a nova foto sozinho.
+
+REGRAS:
+  - Só deve existir UM arquivo por slot. Se colocar morning.jpg e morning.png
+    juntos, vale a ordem: .jpg > .jpeg > .png > .bmp.
+  - Fotos extras/duplicadas: guarde em images/_extras/ (ignorado pelo scan).
+  - Slots vazios (ex: snow, windy, cold, hot) usam fallback automático:
+    outro período da mesma condição → condição parecida → clear_morning.
+  - Botão 📂 Escolher na aba Imagens = override MANUAL (vence o automático).
+    Botão ✖ limpa o manual e volta ao automático.
+  - Botão 🔄 Re-escanear pastas atualiza a tela sem reiniciar o app.

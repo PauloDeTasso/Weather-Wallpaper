@@ -300,20 +300,37 @@ class Dashboard(Base):
     def _build_tab_images(self, tab):
         tab.configure(fg_color=BG)
 
-        # Header
+        # Header — modo automático por convenção de pastas
         hdr = ctk.CTkFrame(tab, fg_color=BG2, corner_radius=10)
         hdr.pack(fill="x", pady=(0, 8))
 
-        ctk.CTkLabel(
-            hdr,
-            text="Selecione uma imagem para cada combinação  Condição × Período  clicando em  📂 Escolher",
-            font=("Segoe UI", 12), text_color=TXT2,
-        ).pack(side="left", padx=14, pady=10)
+        hdr_left = ctk.CTkFrame(hdr, fg_color="transparent")
+        hdr_left.pack(side="left", padx=14, pady=10)
 
         ctk.CTkLabel(
-            hdr, text="✅ arquivo ok    ❌ não encontrado",
-            font=("Segoe UI", 11), text_color=TXT3,
-        ).pack(side="right", padx=14)
+            hdr_left,
+            text="📁 Automático: copie para  images/<condição>/<período>.jpg  e o sistema assume sozinho",
+            font=("Segoe UI", 12, "bold"), text_color=TXT,
+        ).pack(anchor="w")
+        ctk.CTkLabel(
+            hdr_left,
+            text="Ex: images/rain/morning.jpg  •  Para trocar, sobrescreva o arquivo  •  📂 Escolher = override manual",
+            font=("Segoe UI", 11), text_color=TXT2,
+        ).pack(anchor="w")
+
+        hdr_right = ctk.CTkFrame(hdr, fg_color="transparent")
+        hdr_right.pack(side="right", padx=14, pady=6)
+
+        ctk.CTkButton(
+            hdr_right, text="🔄  Re-escanear pastas",
+            command=self._rescan_images,
+            fg_color=ACCENT, hover_color=ACCENT_H,
+            font=("Segoe UI", 11, "bold"), height=32, corner_radius=6,
+        ).pack(anchor="e")
+        self._coverage_label = ctk.CTkLabel(
+            hdr_right, text="—", font=("Segoe UI", 11), text_color=TXT3,
+        )
+        self._coverage_label.pack(anchor="e", pady=(4, 0))
 
         # Scrollable body
         body = ctk.CTkScrollableFrame(tab, fg_color=BG, corner_radius=0)
@@ -347,6 +364,8 @@ class Dashboard(Base):
                 p_emoji = PERIOD_EMOJIS.get(period_key, "🕐")
                 self._build_image_row(body, key, cond_key, period_key,
                                       period_name, p_emoji, p_txt, p_bg, path)
+
+        self._update_coverage_label()
 
     def _build_image_row(self, parent, key, cond_key, period_key,
                          period_name, p_emoji, p_txt, p_bg, current_path):
@@ -403,6 +422,50 @@ class Dashboard(Base):
             fg_color="#2d0f0f", hover_color=RED,
             font=("Segoe UI", 12, "bold"), corner_radius=6,
         ).pack(side="left", padx=(0, 10), pady=8)
+
+    def _update_coverage_label(self):
+        """Atualiza '33/66 automáticas' no header da aba de imagens."""
+        try:
+            from utils.image_store import coverage_report
+            rep = coverage_report(self.config_mgr.get_wallpaper_map())
+            txt = (f"{rep['auto'] + rep['manual']}/66 com imagem  "
+                   f"({rep['auto']} auto • {rep['manual']} manual • {rep['missing']} faltantes)  "
+                   f"✅ ok  ❌ não encontrado")
+            if hasattr(self, "_coverage_label") and self._coverage_label:
+                self._coverage_label.configure(text=txt)
+        except Exception:
+            pass
+
+    def _rescan_images(self):
+        """Re-escaneia images/<cond>/<periodo> e atualiza as 66 linhas sem reiniciar."""
+        try:
+            rep = self.config_mgr.sync_auto_images()
+        except Exception as e:
+            from tkinter import messagebox as _mb
+            _mb.showerror("Re-escanear", f"Falha ao escanear pastas:\n{e}")
+            return
+        wallpaper_map = self.config_mgr.get_wallpaper_map()
+        try:
+            from utils.image_store import scan_all
+            scanned = scan_all(wallpaper_map)
+        except Exception:
+            scanned = {}
+        for key, var in self._map_vars.items():
+            new_path = wallpaper_map.get(key, "")
+            var.set(new_path)
+            lbl = self._map_name_lbls.get(key)
+            if lbl:
+                src = scanned.get(key, {}).get("source", "")
+                tag = {"auto": "  [AUTO]", "manual": "  [MANUAL]"}.get(src, "")
+                lbl.configure(
+                    text=self._short_path(new_path) + tag,
+                    text_color=TXT if new_path and os.path.isfile(new_path) else TXT3,
+                )
+            icon_lbl = self._map_status_lbls.get(key)
+            if icon_lbl:
+                icon_lbl.configure(text=self._status_icon(new_path))
+        self._update_coverage_label()
+        logger.info(f"Re-scan: {rep['auto']} auto, {rep['manual']} manual, {rep['missing']} faltantes.")
 
     # ─────────────────────────────────────────────────────────────
     # ABA 3 — Configurações
@@ -741,8 +804,10 @@ class Dashboard(Base):
             )
 
         if image:
+            src = getattr(self.scheduler, "last_source", "")
+            tag = {"auto": " [AUTO]", "manual": " [MANUAL]"}.get(src, f" [{src}]" if src else "")
             self._active_file_label.configure(
-                text=f"📄  {os.path.basename(image)}  —  {image}", text_color=TXT3
+                text=f"📄  {os.path.basename(image)}  —  {image}{tag}", text_color=TXT3
             )
 
         # ── Preview ───────────────────────────────────────────────

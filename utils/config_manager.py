@@ -2,7 +2,7 @@
 Configuration Manager — config.json
 Compatível com PyInstaller (--onefile):
   - Lê o config padrão de dentro do .exe (resource_path)
-  - Salva alterações do usuário em %APPDATA%\WeatherWallpaper\config.json
+  - Salva alterações do usuário em APPDATA/WeatherWallpaper/config.json
 """
 
 import json
@@ -20,7 +20,9 @@ PERIODS = ["dawn", "morning", "afternoon", "dusk", "night", "midnight"]
 
 
 def _build_default_map() -> dict:
-    return {f"{c}_{p}": f"assets/{c}_{p}.jpg"
+    # Novo padrão canônico: images/<condition>/<period>.jpg
+    # (o sync corrige a extensão real .png/.jpg na primeira carga)
+    return {f"{c}_{p}": os.path.join("images", c, f"{p}.jpg")
             for c in CONDITIONS for p in PERIODS}
 
 
@@ -37,7 +39,7 @@ DEFAULT_CONFIG = {
 
 
 def _user_config_path() -> str:
-    """Caminho gravável em %APPDATA%\WeatherWallpaper\config.json"""
+    """Caminho gravável em APPDATA/WeatherWallpaper/config.json"""
     import builtins
     base = getattr(builtins, "APP_USER_DATA_DIR",
                    os.path.dirname(os.path.abspath(__file__)))
@@ -56,6 +58,13 @@ class ConfigManager:
         self._data = {}
         self._save_path = _user_config_path()
         self.load()
+        # Auto-scan: assume fotos novas copiadas p/ images/<cond>/<periodo>
+        try:
+            rep = self.sync_auto_images()
+            logger.info(f"[Config] imagens: {rep['auto']} auto + {rep['manual']} manual, "
+                        f"{rep['missing']} faltantes de {rep['total']}.")
+        except Exception as e:
+            logger.warning(f"[Config] sync_auto_images falhou: {e}")
 
     def load(self):
         # 1. Tenta carregar do %APPDATA% (config do usuário)
@@ -117,6 +126,51 @@ class ConfigManager:
     def set_wallpaper_key(self, key: str, path: str):
         self._data["wallpaper_map"][key] = path
         self.save()
+
+    def sync_auto_images(self) -> dict:
+        """
+        Preenche o wallpaper_map com as fotos encontradas por convenção
+        images/<condition>/<period>.<ext> — SEM sobrescrever overrides manuais.
+
+        Regra por slot:
+          - se o valor atual está vazio / arquivo não existe / é default antigo
+            'assets/...' inexistente → assume o auto (se houver)
+          - se o valor atual existe e é diferente do auto → mantém (manual)
+        Retorna o coverage_report do image_store.
+        """
+        try:
+            from utils.image_store import scan_all
+        except ImportError:
+            from image_store import scan_all  # fallback
+
+        wallpaper_map = self._data.get("wallpaper_map", {})
+        scanned = scan_all(wallpaper_map)
+
+        changed = 0
+        for key, info in scanned.items():
+            if info["source"] == "auto" and info["path"]:
+                current = (wallpaper_map.get(key) or "").strip()
+                # normaliza p/ comparação
+                try:
+                    same = os.path.abspath(current) == os.path.abspath(info["path"])
+                except Exception:
+                    same = current == info["path"]
+                if not same:
+                    # só sobrescreve se atual for vazio/inexistente/default legado
+                    if (not current
+                            or not os.path.isfile(current)
+                            or current.replace("\\", "/").startswith("assets/")):
+                        wallpaper_map[key] = info["path"]
+                        changed += 1
+        self._data["wallpaper_map"] = wallpaper_map
+        if changed:
+            self.save()
+            logger.info(f"[Config] sync_auto_images: {changed} slots atualizados do disco.")
+        try:
+            from utils.image_store import coverage_report
+        except ImportError:
+            from image_store import coverage_report
+        return coverage_report(wallpaper_map)
 
     @property
     def latitude(self):
