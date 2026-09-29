@@ -156,8 +156,11 @@ class ConfigManager:
                 except Exception:
                     same = current == info["path"]
                 if not same:
-                    # só sobrescreve se atual for vazio/inexistente/default legado
+                    # só sobrescreve se atual for vazio / inexistente / default
+                    # legado / temp obsoleta de bundle antigo (_MEI...)
+                    upper = current.upper()
                     if (not current
+                            or "_MEI" in upper
                             or not os.path.isfile(current)
                             or current.replace("\\", "/").startswith("assets/")):
                         wallpaper_map[key] = info["path"]

@@ -32,13 +32,20 @@ def run_build() -> None:
 
 
 def sync_images() -> tuple[int, int]:
-    """Copia images/ -> dist/images/. Retorna (copiados, total_bytes)."""
+    """
+    Copia images/ -> dist/images/ (pasta oficial da INSTALAÇÃO).
+    images/_extras fica SÓ no git (arquivo de sobressalentes) — fora do pacote.
+    Retorna (copiados, total_bytes).
+    """
     if not os.path.isdir(SRC_IMAGES):
         raise SystemExit(f"[package] ERRO: pasta {SRC_IMAGES} não encontrada.")
 
+    SKIP_DIRS = {"_extras"}
     copied = 0
     total = 0
-    for dirpath, _dirs, files in os.walk(SRC_IMAGES):
+    for dirpath, dirs, files in os.walk(SRC_IMAGES):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        rel = os.path.relpath(dirpath, SRC_IMAGES)
         rel = os.path.relpath(dirpath, SRC_IMAGES)
         dest_dir = os.path.join(DIST_IMAGES, rel) if rel != "." else DIST_IMAGES
         os.makedirs(dest_dir, exist_ok=True)
@@ -79,6 +86,11 @@ def main() -> None:
     if not args.no_build:
         run_build()
     copied, total = sync_images()
+    # Remove sobressalentes de pacotes anteriores (_extras é só-arquivo no git)
+    stale_extras = os.path.join(DIST_IMAGES, "_extras")
+    if os.path.isdir(stale_extras):
+        shutil.rmtree(stale_extras)
+        print("[package] removido dist/images/_extras (fica só no git)")
     print(f"[package] imagens sincronizadas: {copied} copiadas, "
           f"{total / 1e6:.0f} MB em dist/images/")
     verify()

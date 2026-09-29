@@ -17,8 +17,9 @@ a = Analysis(
     datas=[
         # Pasta de assets (imagens do usuário)
         ("assets", "assets"),
-        # Pasta de imagens por convenção (fonte oficial: images/<cond>/<periodo>)
-        ("images", "images"),
+        # NOTA: images/ NÃO vai embutida de propósito — a instalação oficial
+        # é exe + images/ lado a lado (fonte única, exe enxuto, boot rápido).
+        # O app resolve fotos primeiro ao lado do .exe (ver utils/image_store).
         # Config padrão
         ("config.json", "."),
         # Temas e recursos internos do CustomTkinter

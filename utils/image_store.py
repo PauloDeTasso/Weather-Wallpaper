@@ -132,6 +132,10 @@ def resolve_image(key: str, manual_path: str = "") -> tuple[str | None, str]:
     auto = find_auto_image(cond, period)
 
     manual = (manual_path or "").strip()
+    if "_MEI" in manual.upper():
+        # Temp obsoleta de bundle antigo (processo morto sem limpar) — ignora
+        logger.warning(f"[{key}] ignorando path obsoleto de bundle antigo.")
+        manual = ""
     if manual and os.path.isfile(manual):
         abs_manual = os.path.abspath(manual)
         if auto and os.path.abspath(auto) == abs_manual:
