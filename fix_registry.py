@@ -1,6 +1,10 @@
+import os
 import winreg
 
-path = r"E:\PROJETOS\Weather-Wallpaper\dist\WeatherWallpaper\WeatherWallpaper.exe"
+# Resolve o .exe correto dinamicamente: dist/WeatherWallpaper.exe ao lado do repo.
+# (Antes apontava para E:\... + layout onedir antigo dist\WeatherWallpaper\*.exe)
+ROOT = os.path.dirname(os.path.abspath(__file__))
+path = os.path.join(ROOT, "dist", "WeatherWallpaper.exe")
 cmd  = f'"{path}" --minimized'
 
 k = winreg.OpenKey(
