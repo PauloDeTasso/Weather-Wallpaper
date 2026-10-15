@@ -29,6 +29,7 @@ def _build_default_map() -> dict:
 DEFAULT_CONFIG = {
     "latitude": -7.952,
     "longitude": -37.172,
+    "auto_detect_location": True,
     "update_interval_minutes": 10,
     "auto_mode": True,
     "start_with_windows": False,
@@ -214,3 +215,50 @@ class ConfigManager:
     @start_with_windows.setter
     def start_with_windows(self, v):
         self._data["start_with_windows"] = v; self.save()
+
+    @property
+    def auto_detect_location(self):
+        return self._data.get("auto_detect_location", True)
+
+    @auto_detect_location.setter
+    def auto_detect_location(self, v):
+        self._data["auto_detect_location"] = bool(v); self.save()
+
+    def maybe_auto_detect_location(self, force: bool = False) -> bool:
+        """
+        Detecta (lat, lon) via IP e persiste em %APPDATA%/config.json.
+
+        - Só executa se auto_detect_location=True (ou force=True).
+        - Retorna True se as coordenadas foram atualizadas e salvas.
+        - Nunca apaga coordenadas válidas em caso de falha de rede.
+        """
+        if not force and not self._data.get("auto_detect_location", True):
+            logger.info("[Config] auto-detect de localização desativado — mantendo "
+                        f"({self.latitude}, {self.longitude}).")
+            return False
+        try:
+            try:
+                from utils.location_helper import get_location_by_ip
+            except ImportError:
+                from location_helper import get_location_by_ip  # fallback
+            result = get_location_by_ip()
+        except Exception as e:
+            logger.warning(f"[Config] auto-detect falhou: {e}")
+            return False
+        if not result:
+            logger.warning("[Config] auto-detect sem resposta — mantendo coordenadas atuais.")
+            return False
+        lat, lon = result
+        # Evita regravação desnecessária (tolerância ~100m)
+        try:
+            if (abs(float(lat) - float(self.latitude)) < 0.001
+                    and abs(float(lon) - float(self.longitude)) < 0.001):
+                logger.info(f"[Config] localização inalterada ({lat}, {lon}) — nada a salvar.")
+                return False
+        except Exception:
+            pass
+        self._data["latitude"] = float(lat)
+        self._data["longitude"] = float(lon)
+        self.save()
+        logger.info(f"[Config] localização auto-detectada e persistida: ({lat}, {lon})")
+        return True

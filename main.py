@@ -70,6 +70,12 @@ def main():
         logger.warning(f"ensure_skeleton falhou: {e}")
 
     config    = ConfigManager()
+    # Auto-detecta localização via IP a cada inicialização (se ativado).
+    # Persiste em %APPDATA%\WeatherWallpaper\config.json — sem clique manual.
+    try:
+        config.maybe_auto_detect_location()
+    except Exception as e:
+        logger.warning(f"auto-detect de localização falhou: {e}")
     scheduler = Scheduler(config)
     tray      = TrayApp(config, scheduler)
 

@@ -498,7 +498,14 @@ class Dashboard(Base):
             command=self._test_api,
             fg_color=BG3, hover_color=BG2,
             font=("Segoe UI", 12), height=36,
-        ).pack(fill="x")
+        ).pack(fill="x", pady=(0, 8))
+
+        row_geo = ctk.CTkFrame(loc, fg_color="transparent")
+        row_geo.pack(fill="x", pady=3)
+        ctk.CTkLabel(row_geo, text="Detectar localização automaticamente ao iniciar",
+                     font=("Segoe UI", 12), text_color=TXT2).pack(side="left")
+        self._autodetect_sw = ctk.CTkSwitch(row_geo, text="", command=self._toggle_autodetect)
+        self._autodetect_sw.pack(side="right")
 
         # ── Atualização ──────────────────────────────────────────
         upd = self._card(scroll, "⏱️  Atualização Automática")
@@ -571,6 +578,10 @@ class Dashboard(Base):
             self._auto_sw.select()
         else:
             self._auto_sw.deselect()
+        if getattr(self.config_mgr, "auto_detect_location", True):
+            self._autodetect_sw.select()
+        else:
+            self._autodetect_sw.deselect()
         if self.config_mgr.start_with_windows:
             self._startup_sw.select()
         else:
@@ -619,6 +630,9 @@ class Dashboard(Base):
     def _toggle_auto(self):
         self.config_mgr.auto_mode = bool(self._auto_sw.get())
 
+    def _toggle_autodetect(self):
+        self.config_mgr.auto_detect_location = bool(self._autodetect_sw.get())
+
     def _toggle_startup(self):
         from utils.startup_manager import set_startup
         v = bool(self._startup_sw.get())
@@ -650,6 +664,10 @@ class Dashboard(Base):
         self.config_mgr.latitude = lat
         self.config_mgr.longitude = lon
         self.config_mgr.update_interval_minutes = interval
+        try:
+            self.config_mgr.auto_detect_location = bool(self._autodetect_sw.get())
+        except Exception:
+            pass
 
         # Save image map
         for key, var in self._map_vars.items():
@@ -705,12 +723,18 @@ class Dashboard(Base):
             result = get_location_by_ip()
             if result:
                 lat, lon = result
+                try:
+                    # Persiste imediatamente — sem precisar clicar em Salvar
+                    self.config_mgr.latitude = float(lat)
+                    self.config_mgr.longitude = float(lon)
+                except Exception as e:
+                    logger.warning(f"Falha ao persistir localização detectada: {e}")
                 self.after(0, lambda: self._lat_var.set(str(lat)))
                 self.after(0, lambda: self._lon_var.set(str(lon)))
-                self._set_topbar(f"✅  Localização: {lat}, {lon}")
+                self._set_topbar(f"✅  Localização: {lat}, {lon} (salva)")
                 self.after(0, lambda: messagebox.showinfo(
                     "Localização detectada",
-                    f"✅  Localização obtida com sucesso!\n\nLatitude:   {lat}\nLongitude:  {lon}\n\nClique em Salvar para confirmar."
+                    f"✅  Localização obtida e salva!\n\nLatitude:   {lat}\nLongitude:  {lon}"
                 ))
             else:
                 self._set_topbar("❌  Falha ao detectar localização")

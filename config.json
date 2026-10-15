@@ -1,6 +1,7 @@
 {
   "latitude": -7.952,
   "longitude": -37.172,
+  "auto_detect_location": true,
   "update_interval_minutes": 10,
   "auto_mode": true,
   "start_with_windows": false,
