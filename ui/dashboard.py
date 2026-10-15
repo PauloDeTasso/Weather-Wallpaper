@@ -718,11 +718,15 @@ class Dashboard(Base):
 
     def _auto_detect(self):
         def run():
-            from utils.location_helper import get_location_by_ip
+            try:
+                from utils.location_helper import get_location_detail
+            except ImportError:
+                from location_helper import get_location_detail
             self._set_topbar("📡  Detectando localização...")
-            result = get_location_by_ip()
-            if result:
-                lat, lon = result
+            detail = get_location_detail()
+            if detail:
+                lat, lon = detail["latitude"], detail["longitude"]
+                city = detail.get("city", "")
                 try:
                     # Persiste imediatamente — sem precisar clicar em Salvar
                     self.config_mgr.latitude = float(lat)
@@ -731,11 +735,20 @@ class Dashboard(Base):
                     logger.warning(f"Falha ao persistir localização detectada: {e}")
                 self.after(0, lambda: self._lat_var.set(str(lat)))
                 self.after(0, lambda: self._lon_var.set(str(lon)))
-                self._set_topbar(f"✅  Localização: {lat}, {lon} (salva)")
-                self.after(0, lambda: messagebox.showinfo(
-                    "Localização detectada",
-                    f"✅  Localização obtida e salva!\n\nLatitude:   {lat}\nLongitude:  {lon}"
-                ))
+                if detail.get("snapped"):
+                    top = (f"✅  {city}: {lat}, {lon} "
+                           f"(IP estava a {detail['distance_km']} km — corrigido)")
+                    msg = (f"✅  Localização obtida e salva!\n\n{city}\n"
+                           f"Latitude:   {lat}\nLongitude:  {lon}\n\n"
+                           f"IP bruto: {detail['raw_city']} "
+                           f"({detail['raw_lat']}, {detail['raw_lon']}) a "
+                           f"{detail['distance_km']} km — snap aplicado.")
+                else:
+                    top = f"✅  Localização: {lat}, {lon} (salva)"
+                    msg = (f"✅  Localização obtida e salva!\n\nLatitude:   {lat}\n"
+                           f"Longitude:  {lon}")
+                self._set_topbar(top)
+                self.after(0, lambda: messagebox.showinfo("Localização detectada", msg))
             else:
                 self._set_topbar("❌  Falha ao detectar localização")
         threading.Thread(target=run, daemon=True).start()

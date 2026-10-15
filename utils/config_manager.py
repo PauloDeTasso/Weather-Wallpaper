@@ -238,17 +238,19 @@ class ConfigManager:
             return False
         try:
             try:
-                from utils.location_helper import get_location_by_ip
+                from utils.location_helper import get_location_detail
             except ImportError:
-                from location_helper import get_location_by_ip  # fallback
-            result = get_location_by_ip()
+                from location_helper import get_location_detail  # fallback
+            detail = get_location_detail()
         except Exception as e:
             logger.warning(f"[Config] auto-detect falhou: {e}")
             return False
-        if not result:
+        if not detail:
             logger.warning("[Config] auto-detect sem resposta — mantendo coordenadas atuais.")
             return False
-        lat, lon = result
+        lat, lon = detail["latitude"], detail["longitude"]
+        city = detail.get("city", "")
+        dist = detail.get("distance_km", 0.0)
         # Evita regravação desnecessária (tolerância ~100m)
         try:
             if (abs(float(lat) - float(self.latitude)) < 0.001
@@ -260,5 +262,6 @@ class ConfigManager:
         self._data["latitude"] = float(lat)
         self._data["longitude"] = float(lon)
         self.save()
-        logger.info(f"[Config] localização auto-detectada e persistida: ({lat}, {lon})")
+        tag = f" ({city} a {dist} km do IP)" if detail.get("snapped") else (f" ({city})" if city else "")
+        logger.info(f"[Config] localização auto-detectada e persistida: ({lat}, {lon}){tag}")
         return True
